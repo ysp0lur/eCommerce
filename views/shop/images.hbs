@@ -1,0 +1,142 @@
+{{!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> --}}
+    <link href="./stylesheets/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
+    <link href="./themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
+    {{!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script> --}}
+    {{!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> --}}
+    <script src="./javascripts/plugins/piexif.js" type="text/javascript"></script>
+    <script src="./javascripts/plugins/sortable.js" type="text/javascript"></script>
+    <script src="./javascripts/fileinput.js" type="text/javascript"></script>
+    <script src="./javascripts/locales/fr.js" type="text/javascript"></script>
+    <script src="./javascripts/locales/es.js" type="text/javascript"></script>
+    <script src="./themes/fas/theme.js" type="text/javascript"></script>
+    <script src="./themes/explorer-fas/theme.js" type="text/javascript"></script>
+
+<div class="container my-4">
+	<hr><hr><hr>
+    <h1>Mis Articulos
+        <div class="form-group">
+            <div class="file-loading">
+                <label>Preview File Icon</label>
+                <input id="file-3" type="file" multiple>
+            </div>
+        </div>
+    </h1>
+    <hr>
+    <br>
+    <textarea id="description" rows="3" class="form-control" placeholder="Agregar Descripcion a la Imagen..."></textarea>
+    <br>
+    <input type="number" placeholder="Precio">
+    <hr>
+    <input id="file-0" name="file-0" type="file">
+    <hr>
+    <form enctype="multipart/form-data">
+        <script>
+            $(document).on('ready', function () {
+                $("#file-0").fileinput();
+            });
+        </script>
+    </form>
+
+</div>
+
+<script>
+    $("#file-0").fileinput({
+        theme: 'fas',
+        uploadUrl: '/images'
+    }).on('filepreupload', function(event, data, previewId, index) {
+        alert('Describio la Imagen como:\n\n' + ($('#description').val() || ' NULL'));
+    });
+    $("#file-1").fileinput({
+        theme: 'fas',
+        uploadUrl: '/images', // you must set a valid URL here else you will get an error
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        overwriteInitial: false,
+        maxFileSize: 1000,
+        maxFilesNum: 10,
+        //allowedFileTypes: ['image', 'video', 'flash'],
+        slugCallback: function (filename) {
+            return filename.replace('(', '_').replace(']', '_');
+        }
+    });
+    /*
+     $(".file").on('fileselect', function(event, n, l) {
+     alert('File Selected. Name: ' + l + ', Num: ' + n);
+     });
+     */
+    $("#file-3").fileinput({
+        theme: 'fas',
+        showUpload: false,
+        showCaption: false,
+        browseClass: "d-none hide",
+        fileType: "any",
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        initialPreviewAsData: true,
+        initialPreview: [
+           
+            "./img/i99980xe.jpg",
+            "./img/ddr4aura.jpg",
+            "./img/2060super.jpg",
+            "./img/2080ti.jpg"
+            
+        ],
+        initialPreviewConfig: [
+            {{#each products}}
+            {caption: "{{this.item.title}}", size: 329892, width: "120px", url: "./img/{{this.item.title}}", key: "{{this.item._id}}"},
+            {{/each}}
+        ]
+    });
+    $("#file-4").fileinput({
+        theme: 'fas',
+        uploadExtraData: {kvId: '10'}
+    });
+    $(".btn-warning").on('click', function () {
+        var $el = $("#file-4");
+        if ($el.attr('disabled')) {
+            $el.fileinput('enable');
+        } else {
+            $el.fileinput('disable');
+        }
+    });
+    $(".btn-info").on('click', function () {
+        $("#file-4").fileinput('refresh', {previewClass: 'bg-info'});
+    });
+    /*
+     $('#file-4').on('fileselectnone', function() {
+     alert('Huh! You selected no files.');
+     });
+     $('#file-4').on('filebrowse', function() {
+     alert('File browse clicked for #file-4');
+     });
+     */
+    $(document).ready(function () {
+        $("#test-upload").fileinput({
+            'theme': 'fas',
+            'showPreview': false,
+            'allowedFileExtensions': ['jpg', 'png', 'gif'],
+            'elErrorContainer': '#errorBlock'
+        });
+        $("#kv-explorer").fileinput({
+            'theme': 'explorer-fas',
+            'uploadUrl': '/images',
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+            initialPreview: [
+             "http://lorempixel.com/1920/1080/nature/1",
+                "http://lorempixel.com/1920/1080/nature/2",
+                "http://lorempixel.com/1920/1080/nature/3"
+            ],
+            initialPreviewConfig: [
+                  {caption: "nature-1.jpg", size: 329892, width: "120px", url: "{$url}", key: 1},
+                {caption: "nature-2.jpg", size: 872378, width: "120px", url: "{$url}", key: 2},
+                {caption: "nature-3.jpg", size: 632762, width: "120px", url: "{$url}", key: 3}
+            ]
+        });
+        /*
+         $("#test-upload").on('fileloaded', function(event, file, previewId, index) {
+         alert('i = ' + index + ', id = ' + previewId + ', file = ' + file.name);
+         });
+         */
+    });
+</script>
